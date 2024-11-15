@@ -5,14 +5,9 @@ const Dashboard = () => {
   const [searchEmail, setSearchEmail] = useState('');
   const [emailData, setEmailData] = useState(null);
   const [loading, setLoading] = useState(false);
-  
-  const handleSearch = async (e) => {
-    e.preventDefault();
 
+  const fetchData = async () => {
     if(!searchEmail) return alert("Enter email!");
-
-    // Show loading state
-    setLoading(true);
 
     try {
       const response = await fetch(`${BASE_URL}/${searchEmail}`); // Replace with your API endpoint
@@ -25,35 +20,20 @@ const Dashboard = () => {
     } catch (err) {
       console.error(err)
     }
-    finally{
-      setLoading(false)
-    }
+  }
+  
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    // Show loading state
+    setLoading(true);
+    setInterval(fetchData, 1500);
+    setLoading(false);
   };
 
   function convertToIST(utcTimestamp) {
     if(!utcTimestamp) return "N/A";
-
-    const date = new Date(utcTimestamp);
-    
-    // Add 5 hours and 30 minutes to convert to IST
-    date.setHours(date.getHours() + 5);
-    date.setMinutes(date.getMinutes() + 30);
-    
-    // Formatting the date to match the required format
-    const options = {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true
-    };
-  
-    return date.toLocaleString('en-IN', options).replace(',', '');
+    return new Date(utcTimestamp).toLocaleString();
   }
-
-  
 
   return (
     <div className="max-w-5xl mx-auto p-6">
